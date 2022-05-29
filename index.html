@@ -9,29 +9,72 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
-    <div id="canvas">
-    </div>
+<body style="overflow: hidden;">
+    <canvas id="canvas" width="100" height="100"></canvas>
+    <!-- <div id="canvas"> -->
+    <!-- </div> -->
     <script>
-        // canvas.onclick等于一个函数
-        canvas.onclick = (e) => {
-            console.log(e.clientX)
-            console.log(e.clientY)
-            // console.log 调试大法
-            // 让文档创建一个便签
-            let div = document.createElement('div')
-            div.style.position = 'absolute'
-            div.style.left = e.clientX + 'px'
-            div.style.top = e.clientY + 'px'
-            div.style.width = '6px'
-            div.style.height = '6px'
-            div.style.marginLeft = '-3px'
-            div.style.marginTop = '-3px'
-            div.style.borderRadius = '50%'
-            div.style.backgroundColor = 'red'
-            // 让canvas添加一个div孩子
-            canvas.appendChild(div)
+
+        let canvas = document.getElementById("canvas");
+        canvas.width = document.documentElement.clientWidth
+        canvas.height = document.documentElement.clientHeight
+        let ctx = canvas.getContext("2d");
+        ctx.lineJoin = "round";
+        // ctx.fillStyle = 'blue'
+        ctx.strokeStyle = "blue";
+        // ctx.lineCaps = "round";
+        ctx.lineWidth = 10;
+
+        let painting = false
+        let last
+        // 检测是否支持手机
+        var isTouchDevice = 'ontouchstart' in document.documentElement;
+        // console.log(isTouchDevice)
+        // 检测是不是手机
+        // ------------------------------s
+        if (isTouchDevice) {
+            canvas.ontouchstart = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                last = [x, y]
+            }
+            canvas.ontouchmove = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                drawLine(last[0], last[1], x, y)
+                last = [x, y]
+            }
         }
+        // -----------------------------------
+        // 电脑
+        else {
+            canvas.onmousedown = (e) => {
+                painting = true
+                last = [e.clientX, e.clientY]
+            }
+
+            canvas.onmousemove = (e) => {
+                if (painting === true) {
+
+                    drawLine(last[0], last[1], e.clientX, e.clientY)
+                    last = [e.clientX, e.clientY]
+                }
+
+            }
+            canvas.onmouseup = () => {
+                painting = false
+            }
+        }
+
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+
     </script>
 </body>
 

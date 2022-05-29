@@ -5,6 +5,15 @@
 }
 
 #canvas{
-    height: 100vh;
-    border: 1px solid black;
+    /* height: 100vh; */
+    /* height: 100vw; */
+    /* border: 1px solid black; */
+    /* 默认是inline元素就有滚动条 */
+    display: block;
+}
+
+
+body{
+    /* border: 1px solid blue; */
+    overflow: hidden;
 }
